@@ -1,0 +1,245 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition template="/WEB-INF/templates/Layout.xhtml"
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:o="http://omnifaces.org/ui">
+
+	<ui:define name="titulo">#{cadastroProdutoControlador.editar() ? 'Edição':'Cadastro'} de Produto</ui:define>
+
+	<ui:define name="conteudo">
+
+		<f:metadata>
+			<o:viewParam name="produto"
+				value="#{cadastroProdutoControlador.produto}" />
+		</f:metadata>
+
+		<h:form id="frmCadastroProduto">
+			<p:messages id="mensagensPadrao" autoUpdate="true" closable="true" />
+			<p:growl for="growMensage" />
+			<h1>#{cadastroProdutoControlador.editar() ? 'Edição':'Cadastro'}
+				de produto</h1>
+			<!-- Inicio Barra de opoces -->
+			<p:toolbar style="margin-bottom: 20px">
+				<!-- Inicio de grupo de Barra de opces a esquerda -->
+				<p:toolbarGroup>
+					<p:commandButton
+						value="#{cadastroProdutoControlador.editar() ? 'Editar':'Salvar'}"
+						style="margin-right: 5px"
+						actionListener="#{cadastroProdutoControlador.salvar()}"
+						update="@form" />
+					<p:button value="Novo"
+						outcome="/pages/private/produto/cadastro/CadastroProduto.xhtml" />
+				</p:toolbarGroup>
+				<!-- Fim de grupo de Barra de opces a esquerda -->
+
+				<!-- Inicio de grupo de Barra de opces a Direita -->
+				<p:toolbarGroup align="right">
+					<p:button value="Pesquisar"
+						outcome="/pages/private/produto/pesquisa/PesquisaProduto.xhtml" />
+				</p:toolbarGroup>
+				<!-- Fim de grupo de Barra de opces a Direita -->
+			</p:toolbar>
+			<!-- Fim Barra de opcoes -->
+			<h:panelGrid columns="2" id="panelProdutoNome">
+				<p:outputLabel value="Cod. Interno " for="codIntProduto"
+					rendered="false" />
+				<p:inputText id="codIntProduto" disabled="true" style="width: 60px"
+					value="#{cadastroProdutoControlador.produto.id}"
+					converter="converterNumber" rendered="false" />
+
+				<p:outputLabel value="" />
+				<p:calendar placeholder="DD/MM/YYYY" disabled="true" size="10"
+					pattern="dd/MM/yyyy" title="Data Última Atualização"
+					value="#{cadastroProdutoControlador.produto.dataUltimaAtualizacao}" />
+
+				<p:outputLabel value="Código " for="codProduto" />
+				<p:inputText id="codProduto" style="width: 60px"
+					value="#{cadastroProdutoControlador.produto.codProduto}"
+					maxlength="10" disabled="#{cadastroProdutoControlador.editar() and !seguranca.editarEstoqueProduto}" />
+
+				<p:outputLabel value="Nome " for="nomeProduto" />
+				<p:inputText id="nomeProduto" size="60"
+					onkeyup="this.value=this.value.toUpperCase();"
+					value="#{cadastroProdutoControlador.produto.nomeProduto}" />
+					
+				<p:outputLabel value="Status " for="statusProduto"/>
+				<p:selectBooleanButton onLabel="Ativo" offLabel="Inativo" value="#{cadastroProdutoControlador.produto.ativo}"
+					disabled="#{cadastroProdutoControlador.editar() and !seguranca.editarEstoqueProduto}" id="statusProduto"/>
+			</h:panelGrid>
+
+			<p:tabView id="janelasCadastroProduto">
+				<p:tab title="Valores" id="valoresTab">
+					<h:panelGrid columns="2" id="panelValores"
+						style="margin-bottom: 15px">
+						<p:outputLabel value="Valor de Custo " for="valorCusto" />
+						<p:inputText id="valorCusto"
+							disabled="#{cadastroProdutoControlador.editar() and !seguranca.editarEstoqueProduto}" size="5"
+							value="#{cadastroProdutoControlador.produto.valoresProdutos.valorCusto}">
+								<f:convertNumber type="currency"/>
+							</p:inputText>
+
+						<p:outputLabel value="Valor da Venda " for="valorVenda" />
+						<p:inputText id="valorVenda"
+							disabled="#{cadastroProdutoControlador.editar() and !seguranca.editarEstoqueProduto}" size="5"
+							value="#{cadastroProdutoControlador.produto.valoresProdutos.valorComercial}" >
+							<f:convertNumber type="currency"/>
+						</p:inputText>
+
+						<p:outputLabel value="Valor da Tributavel " for="valorTributavel" rendered="false"/>
+						<p:inputText id="valorTributavel" rendered="false"
+							disabled="#{cadastroProdutoControlador.editar() and !seguranca.editarEstoqueProduto}" size="5"
+							value="#{cadastroProdutoControlador.produto.valoresProdutos.valorTributavel}" >
+							<f:convertNumber type="currency"/>
+						</p:inputText>
+					</h:panelGrid>
+				</p:tab>
+				<p:tab title="Unidade Medida" id="unidadeMedidaTab">
+					<h:panelGrid columns="2">
+						<p:outputLabel value="Tipo " for="tipoProduto" />
+						<p:selectOneMenu id="tipoProduto"
+							converter="converterTipoUnidadeProduto"
+							value="#{cadastroProdutoControlador.produto.tipoUnidade}"
+							disabled="#{cadastroProdutoControlador.editar()}">
+							<f:selectItem itemLabel="Selecione" noSelectionOption="true" />
+							<f:selectItems
+								value="#{cadastroProdutoControlador.tipoUnidadeProduto}"
+								var="tpUnidadeProduto"
+								itemLabel="#{tpUnidadeProduto.descricaoUnidade}"
+								itemValue="#{tpUnidadeProduto}" />
+						</p:selectOneMenu>
+
+						<p:outputLabel value="Tipo Trib." for="tipoProdutoTrib" rendered="false"/>
+						<p:selectOneMenu id="tipoProdutoTrib" rendered="false"
+							converter="converterTipoUnidadeProduto"
+							disabled="#{cadastroProdutoControlador.editar()}"
+							value="#{cadastroProdutoControlador.produto.tipoUnidadeTributavel}">
+							<f:selectItem itemLabel="Selecione" noSelectionOption="true" />
+							<f:selectItems
+								value="#{cadastroProdutoControlador.tipoUnidadeProduto}"
+								var="tpUnidadeProduto"
+								itemLabel="#{tpUnidadeProduto.descricaoUnidade}"
+								itemValue="#{tpUnidadeProduto}" />
+						</p:selectOneMenu>
+					</h:panelGrid>
+				</p:tab>
+				<p:tab title="Codigo de Barras" id="codigoBarrasTab">
+					<p:outputLabel value="Cod. Barras " for="codBarrasProduto" />
+					<p:column>
+						<p:inputText id="codBarrasProduto"
+							value="#{cadastroProdutoControlador.ean.codBarras}" size="20"
+							style="margin-right: 5px"
+							onkeyup="this.value=this.value.toUpperCase();" />
+						<p:outputLabel value="Tributavel" for="checkTributavel" rendered="false"
+							style="margin-left: 5px" />
+						<p:selectBooleanCheckbox id="checkTributavel"
+							style="margin-left: 5px" rendered="false"
+							value="#{cadastroProdutoControlador.ean.tributavel}" />
+					</p:column>
+					<center style="color: #E6E6FA;">
+						<p:commandButton icon="ui-icon-check"
+							update="tabelaProduto codBarrasProduto"
+							process="@this codBarrasProduto checkTributavel"
+							actionListener="#{cadastroProdutoControlador.adicionarEan()}"
+							style="margin-left: 5px" value="Adcionar" />
+					</center>
+					<!-- Inicio Tabela Eans -->
+					<p:dataTable id="tabelaProduto" var="ean"
+						value="#{cadastroProdutoControlador.produto.eans}"
+						style="width: 50%; margin-top: 10px">
+						<p:column headerText="Cód. Barras" width="70%">
+							<p:outputLabel value="#{ean.codBarras}" />
+						</p:column>
+						<p:column headerText="Tributavel" width="20%" rendered="false">
+							<p:selectBooleanCheckbox value="#{ean.tributavel}"
+								disabled="true" />
+						</p:column>
+						<p:column width="100px">
+							<p:commandButton icon="ui-icon-trash" process="@this"
+								update=":frmCadastroProduto:janelasCadastroProduto:confirmacaoExclusaoEanDialog"
+								oncomplete="PF('confirmacaoExclusaoEan').show(); return false;">
+								<f:setPropertyActionListener
+									target="#{cadastroProdutoControlador.eanSelecionado}"
+									value="#{ean}" />
+							</p:commandButton>
+						</p:column>
+					</p:dataTable>
+					<!-- Fim Tabela Eans -->
+
+					<p:confirmDialog header="Exclusão de Ean"
+						message="Tem certeza que deseja remover o ean?"
+						widgetVar="confirmacaoExclusaoEan"
+						id="confirmacaoExclusaoEanDialog">
+						<p:button icon="ui-icon-cancel" value="Não"
+							onclick="PF('confirmacaoExclusaoEan').hide(); return false;" />
+						<p:commandButton icon="ui-icon-check" value="Sim"
+							oncomplete="PF('confirmacaoExclusaoEan').hide(); return false;"
+							action="#{cadastroProdutoControlador.removerEanDaLista()}"
+							update="tabelaProduto" process="@this" />
+					</p:confirmDialog>
+				</p:tab>
+				<p:tab title="Estoque" id="estoqueTab">
+					<h:panelGrid columns="4">
+
+						<p:outputLabel value="Qtde Estoque:" for="qtdeEstoque" />
+						<p:inputText id="qtdeEstoque" styleClass="moeda"
+							disabled="#{cadastroProdutoControlador.editar() and !seguranca.editarEstoqueProduto}" size="5"
+							value="#{cadastroProdutoControlador.produto.estoqueProduto.quantidadeEstoque}" converter="converterToBigDecimal"/>
+
+						<p:outputLabel value="Qtde Tributável:" for="qtdeTributavel" rendered="false"/>
+						<p:inputText id="qtdeTributavel" styleClass="moeda" rendered="false"
+							disabled="#{cadastroProdutoControlador.editar() and !seguranca.editarEstoqueProduto}" size="5"
+							value="#{cadastroProdutoControlador.produto.estoqueProduto.quantidadeTributavel}" converter="converterToBigDecimal"/>
+
+						<p:outputLabel value="Pendente Saída:" for="pendenteSaida" rendered="false"/>
+						<p:inputText id="pendenteSaida" styleClass="moeda" rendered="false"
+							disabled="#{cadastroProdutoControlador.editar()}" size="5"
+							value="#{cadastroProdutoControlador.produto.estoqueProduto.quantidadePendenteSaida}" converter="converterToBigDecimal"/>
+
+						<p:outputLabel value="Pendente Entrada:" for="pendenteEntrada" rendered="false"/>
+						<p:inputText id="pendenteEntrada" styleClass="moeda" rendered="false"
+							disabled="#{cadastroProdutoControlador.editar()}" size="5"
+							value="#{cadastroProdutoControlador.produto.estoqueProduto.quantidadePendenteEntrada}" converter="converterToBigDecimal"/>
+					</h:panelGrid>
+				</p:tab>
+				<p:tab title="Tabelas de Desconto" id="descontosCadastro">
+					<p:dataTable id="tabelaDesconto" value="#{cadastroProdutoControlador.produto.descontos}"
+						var="desconto" emptyMessage="Este produto não tem desconto!">
+						<f:facet name="header">Descontos</f:facet>
+						
+						<p:column headerText="ID" width="5%">
+							<p:outputLabel value="#{desconto.id}"/>
+						</p:column>
+						
+						<p:column headerText="Nome" width="65%">
+							<p:outputLabel value="#{desconto.nome}"/>
+						</p:column>
+						
+						<p:column headerText="(%) Min" width="5%">
+							<p:outputLabel value="#{desconto.percentualMinimoDesconto}">
+								<f:convertNumber type="number"/>
+							</p:outputLabel>
+						</p:column>
+						
+						<p:column headerText="(%) Max" width="5%">
+							<p:outputLabel value="#{desconto.percentualMaximoDesconto}">
+								<f:convertNumber type="number"/>
+							</p:outputLabel>
+						</p:column>
+						
+						<p:column headerText="Data Fim" width="10%">
+							<p:calendar value="#{desconto.dataFim}" disabled="true" pattern="dd/MM/yyyy" locale="pt_BR" size="10"/>
+						</p:column>
+						
+						<p:column headerText="Situação" width="10%">
+							<p:selectBooleanButton onLabel="Ativo" offLabel="Inativo" value="#{desconto.ativo}" disabled="true"/>
+						</p:column>
+					</p:dataTable>
+				</p:tab>
+			</p:tabView>
+		</h:form>
+	</ui:define>
+</ui:composition>

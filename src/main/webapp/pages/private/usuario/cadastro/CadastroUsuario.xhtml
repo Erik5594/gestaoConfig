@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition template="/WEB-INF/templates/Layout.xhtml"
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:f="http://java.sun.com/jsf/core">
+
+	<ui:define name="titulo">Cadastro de usuário</ui:define>
+
+	<ui:define name="conteudo">
+	<f:metadata>
+		<f:viewParam name="dummy"/>
+		<f:event listener="#{cadastroUsuarioControlador.inicializar()}" type="preRenderView"/>
+	</f:metadata>
+		<h:form id="frmCadastroUsuario">
+			<p:messages id="mensagens" autoUpdate="true" for="mensageError"/>
+			<p:messages id="mensagensPadrao" autoUpdate="true"/>
+			<p:growl for="growMensage"/>
+			<h1>Cadastro de usuário</h1>
+			<!-- Inicio Barra de opoces -->
+			<p:toolbar style="margin-bottom: 20px">
+				<!-- Inicio de grupo de Barra de opces a esquerda -->
+				<p:toolbarGroup>
+					<p:commandButton value="Salvar" style="margin-right: 5px" 
+					update="@form" action="#{cadastroUsuarioControlador.salvar()}"/>
+					<p:button value="Novo"
+						outcome="/pages/private/usuario/cadastro/CadastroUsuario.xhtml" />
+				</p:toolbarGroup>
+				<!-- Fim de grupo de Barra de opces a esquerda -->
+				
+				<!-- Inicio de grupo de Barra de opces a Direita -->
+				<p:toolbarGroup align="right">
+					<p:commandButton value="Pesquisar" process="@this"/>
+				</p:toolbarGroup>
+				<!-- Fim de grupo de Barra de opces a Direita -->
+			</p:toolbar>
+			<!-- Fim Barra de opcoes -->
+			<h:panelGrid columns="2" id="gridDadosUsuario">
+			
+			<p:outputLabel value="Nome:" for="nomeUsuario"/>
+			<p:inputText size="30" id="nomeUsuario" value="#{cadastroUsuarioControlador.usuario.nome}" label="Nome usuário"/>
+			
+			<p:outputLabel value="Login:" for="login"/>
+			<p:inputText size="30" id="login" value="#{cadastroUsuarioControlador.usuario.email}" label="E-mail"/>
+			</h:panelGrid>
+			
+			<h:panelGrid columns="2" id="gridSenhaUsuario" style="margin-top: 10px;">
+	        <p:outputLabel for="pwd1" value="Senha:" />
+	        <p:password id="pwd1" value="#{cadastroUsuarioControlador.usuario.senha}" match="pwd2" label="Senha" feedback="true" validatorMessage="As senhas não conferem!"/>
+	        
+	        <p:outputLabel for="pwd2" value="Confirmar Senha:" />
+	        <p:password id="pwd2" value="#{cadastroUsuarioControlador.usuario.senha}" label="Senha de Confirmação" required="true"/>
+			</h:panelGrid>
+			
+			<h:panelGrid columns="2" id="gridGruposUsuario" style="margin-top: 10px;">
+			<p:outputLabel value="Grupos:" rendered="#{not empty cadastroUsuarioControlador.grupos}"/>
+			<p:selectManyCheckbox layout="grid" columns="3" label="Grupos" rendered="#{not empty cadastroUsuarioControlador.grupos}"
+			 value="#{cadastroUsuarioControlador.ids}">
+			 	<f:selectItems value="#{cadastroUsuarioControlador.grupos}" var="grupo" itemLabel="#{grupo.nomeAmigavel}"
+			 	itemValue="#{grupo.id}"/>
+			</p:selectManyCheckbox>
+			</h:panelGrid>
+		</h:form>
+	</ui:define>
+</ui:composition>
