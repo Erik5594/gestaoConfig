@@ -7,7 +7,6 @@ import javax.faces.context.FacesContext;
 import javax.faces.convert.Converter;
 import javax.faces.convert.FacesConverter;
 
-import com.github.erik5594.enuns.Operadora;
 import com.github.erik5594.enuns.TipoVeiculo;
 
 @FacesConverter(value = "converterTipoVeiculo")

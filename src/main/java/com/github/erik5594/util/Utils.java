@@ -8,10 +8,7 @@ import java.util.List;
 
 import org.apache.commons.lang3.StringUtils;
 
-import com.github.erik5594.entidades.EstoqueProduto;
 import com.github.erik5594.entidades.Pessoa;
-import com.github.erik5594.entidades.ValoresProduto;
-import com.github.erik5594.entidades.Veiculo;
 
 public class Utils {
 
@@ -223,23 +220,6 @@ public class Utils {
 		}else if(obj instanceof BigDecimal){
 			BigDecimal bgDec = (BigDecimal)obj;
 			return isNotNull(bgDec) && bgDec != BigDecimal.ZERO;
-		}else if(obj instanceof ValoresProduto){
-			ValoresProduto valor = (ValoresProduto) obj;
-			return isNotNullOrEmpty(valor.getValorComercial())
-					/*&& isNotNullOrEmpty(valor.getValorCusto())
-					&& isNotNullOrEmpty(valor.getValorTributavel())*/;
-			
-		}else if(obj instanceof EstoqueProduto){
-			EstoqueProduto estoque = (EstoqueProduto) obj;
-			return isNotNullOrEmpty(estoque.getQuantidadeEstoque())
-					/*&& isNotNullOrEmpty(estoque.getQuantidadePendenteEntrada())
-					&& isNotNullOrEmpty(estoque.getQuantidadePendenteSaida())
-					&& isNotNullOrEmpty(estoque.getQuantidadeTributavel())*/;
-		}else if (obj instanceof Veiculo) {
-			Veiculo veiculo = (Veiculo) obj;
-			return isNotNullOrEmpty(veiculo.getPlaca())
-					&& isNotNullOrEmpty(veiculo.getChassi())
-					&& isNotNullOrEmpty(veiculo.getCliente());
 		} else if (obj instanceof Pessoa) {
 			Pessoa cliente = (Pessoa) obj;
 			return isNotNullOrEmpty(cliente.getNome())
